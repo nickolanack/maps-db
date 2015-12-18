@@ -10,7 +10,7 @@
 	src="https://s3-us-west-2.amazonaws.com/nickolanackbucket/mootools/mootools_compat.js"
 	type="text/javascript"></script>
 <script type="text/javascript"
-	src="SimpleKml.js">
+	src="bower_components/js-simplekml/KmlReader.js">
     </script>
 
 
@@ -39,7 +39,6 @@ body {
 
 function initMap(){
 
-console.log("hello world");
 
 
 var map = new google.maps.Map(document.getElementById('map'), {
@@ -109,64 +108,60 @@ if (window.DOMParser) {
 var xmlDoc = parseXml(layer);
 
 
-var parser=new KmlReader({
-							polygonTransform:function(polygonParams, xmlSnippet){
-								//console.log(polygonParams);
-
-								var polygon= new google.maps.Polygon((function(){
-									var polygonOpts={
-											paths:(function(){
+var infowindow = new google.maps.InfoWindow({
+  });
 
 
-												var paths=polygonParams.coordinates.map(function(coord){
-													return {lat:parseFloat(coord[0]), lng:parseFloat(coord[1])};
-												});
-												return paths;
-											})(),
-											fillColor:'rgba(100, 149, 237, 0.79)',
-											fillOpacity:0.7,
-											strokeColor:'#000000',
-											strokeWeight:1,
-											strokeOpacity:0.7
-									};
-									console.log(polygonOpts);
-									return polygonOpts;
-								})());
+(new KmlReader()).parsePolygons(function(polygonParams, xmlSnippet){
+	//console.log(polygonParams);
 
-								polygon.setMap(map);
+	var polygon= new google.maps.Polygon((function(){
+		var polygonOpts={
+				paths:(function(){
 
-								google.maps.event.addListener(polygon, 'click',function(e){
 
-								});
+					var paths=polygonParams.coordinates.map(function(coord){
+						return {lat:parseFloat(coord[0]), lng:parseFloat(coord[1])};
+					});
+					return paths;
+				})(),
+				fillColor:'rgba(100, 149, 237, 0.79)',
+				fillOpacity:0.7,
+				strokeColor:'#000000',
+				strokeWeight:1,
+				strokeOpacity:0.7
+		};
+		return polygonOpts;
+	})());
 
-								google.maps.event.addListener(polygon, 'mouseover',function(e){
-									
-								});
+	polygon.setMap(map);
 
-								google.maps.event.addListener(polygon, 'mouseout',function(e){
-									
-								});
+	google.maps.event.addListener(polygon, 'click',function(e){
+		infowindow.setContent(polygonParams.description||'');
+		infowindow.open(map, polygon);
+	});
 
-							},
-							markerTransform:function(markerParams, xmlSnippet){
-								//console.log(polygonParams);
 
-								var marker= new google.maps.Marker((function(){
-									var markerOpts={
-										position: {lat:parseFloat(markerParams.coordinates[0]), lng:parseFloat(markerParams.coordinates[1])},
-    									title: 'Hello World!'
-									};
-									console.log(markerOpts);
-									return markerOpts;
-								})());
+}).parseMarkers(function(markerParams, xmlSnippet){
+	//console.log(polygonParams);
 
-								marker.setMap(map);
+	var marker= new google.maps.Marker((function(){
+		var markerOpts={
+			position: {lat:parseFloat(markerParams.coordinates[0]), lng:parseFloat(markerParams.coordinates[1])},
+			title: markerParams.name||'unnammed'
+		};
+		
+		return markerOpts;
+	})());
 
-							}
-						})
-			parser.parsePolygons(xmlDoc);
-			parser.parseMarkers(xmlDoc);
+	marker.setMap(map);
 
+	google.maps.event.addListener(marker, 'click',function(e){
+		infowindow.setContent(markerParams.description||'');
+		infowindow.open(map, marker);
+	});
+
+});
 
 
 
