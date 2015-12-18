@@ -1,0 +1,21 @@
+{
+  "name": "maps-db",
+  "homepage": "https://github.com/nickolanack/maps-db",
+  "authors": [
+    "nickolanack <nickblackwell82@gmail.com>"
+  ],
+  "description": "Map collection interface",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "js-simplekml": "https://github.com/nickolanack/js-simplekml.git"
+  }
+}

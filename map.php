@@ -109,7 +109,7 @@ if (window.DOMParser) {
 var xmlDoc = parseXml(layer);
 
 
-var parser=new SimpleParser({
+var parser=new KmlReader({
 							polygonTransform:function(polygonParams, xmlSnippet){
 								//console.log(polygonParams);
 
