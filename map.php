@@ -88,31 +88,12 @@ if(key_exists('site',$_GET)){
 ?>;
 
 
-var parseXml;
-
-if (window.DOMParser) {
-    parseXml = function(xmlStr) {
-        return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
-    };
-} else if (typeof window.ActiveXObject != "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
-    parseXml = function(xmlStr) {
-        var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
-        xmlDoc.async = "false";
-        xmlDoc.loadXML(xmlStr);
-        return xmlDoc;
-    };
-} else {
-    parseXml = function() { return null; }
-}
-
-var xmlDoc = parseXml(layer);
-
 
 var infowindow = new google.maps.InfoWindow({
   });
 
 
-(new KmlReader()).parsePolygons(function(polygonParams, xmlSnippet){
+(new KmlReader(layer)).parsePolygons(function(polygonParams, xmlSnippet){
 	//console.log(polygonParams);
 
 	var polygon= new google.maps.Polygon((function(){
@@ -125,7 +106,7 @@ var infowindow = new google.maps.InfoWindow({
 					});
 					return paths;
 				})(),
-				fillColor:'rgba(100, 149, 237, 0.79)',
+				fillColor:'rgba(100, 149, 237, 0.70)', //cornflowerblue;
 				fillOpacity:0.7,
 				strokeColor:'#000000',
 				strokeWeight:1,
@@ -138,7 +119,8 @@ var infowindow = new google.maps.InfoWindow({
 
 	google.maps.event.addListener(polygon, 'click',function(e){
 		infowindow.setContent(polygonParams.description||'');
-		infowindow.open(map, polygon);
+		infowindow.setPosition(polygon.getPath().getAt(0));
+		infowindow.open(map);
 	});
 
 
@@ -150,6 +132,10 @@ var infowindow = new google.maps.InfoWindow({
 			position: {lat:parseFloat(markerParams.coordinates[0]), lng:parseFloat(markerParams.coordinates[1])},
 			title: markerParams.name||'unnammed'
 		};
+
+		// if(markerParams.icon){
+		 	markerOpts.icon='https://storage.googleapis.com/support-kms-prod/SNP_2752125_en_v0';//markerParams.icon;
+		// }
 		
 		return markerOpts;
 	})());
