@@ -37,7 +37,7 @@ class MapResources{
 	}
 	
 	public function getListUrl(){
-		return  'http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites';
+		return  $this->url;
 	}
 
 	public function getResourceMetadata($site){
