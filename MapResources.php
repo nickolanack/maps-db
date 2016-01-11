@@ -2,10 +2,16 @@
 
 class MapResources{
 
+	protected $url=null;
+	public function __construct($url){
 
-	public static function GetList(){	
+		$this->url=rtrim($url,'/');
+	}
 
-		$text= file_get_contents(self::GetListUrl());
+
+	public function getList(){	
+
+		$text= file_get_contents($this->getListUrl());
 		$doc=new DOMDocument();
 		$doc->loadXml($text);
 
@@ -30,21 +36,21 @@ class MapResources{
 
 	}
 	
-	public static function GetListUrl(){
+	public function getListUrl(){
 		return  'http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites';
 	}
 
-	public static function GetResourceMetadata($site){
+	public function getResourceMetadata($site){
 
-		echo $text= file_get_contents('http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/'.$site.'');
+		echo $text= file_get_contents($this->url.'/'.$site.'');
 		//$doc=new DOMDocument();
 		//$doc->loadXml($text);
 
 	}
 
-	public static function GetResourceLayers($site){
+	public function getResourceLayers($site){
 
-		$text= file_get_contents(self::GetResourceLayersUrl($site));
+		$text= file_get_contents($this->getResourceLayersUrl($site));
 		
 		$doc=new DOMDocument();
 		$doc->loadXml($text);
@@ -99,11 +105,11 @@ class MapResources{
 
 	}
 
-	public static function GetResourceLayersUrl($site){
-		return 'http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/'.$site.'/layers/';
+	public function getResourceLayersUrl($site){
+		return $this->url.'/'.$site.'/layers/';
 	}
 	
-	public static function GetResourceLayerKml($site, $layer){
+	public function getResourceLayerKml($site, $layer){
 
 		//echo 'kml for site: '.$site.' layer: '.$layer."\n";
 		$file=__DIR__.'/'.$site.'-'.$layer.'.kml';
@@ -120,7 +126,7 @@ class MapResources{
 		);
 
 		$context = stream_context_create($opts);
-		$response = file_get_contents(self::GetResourceLayerKmlUrl($site, $layer), false, $context);
+		$response = file_get_contents($this->getResourceLayerKmlUrl($site, $layer), false, $context);
 		
 		file_put_contents($file, $response);
 		
@@ -128,11 +134,11 @@ class MapResources{
 
 	}
 
-	public static function GetResourceLayerKmlUrl($site, $layer){
-		return 'http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/'.$site.'/layers/'.$layer.'/data/';
+	public function getResourceLayerKmlUrl($site, $layer){
+		return $this->url.'/'.$site.'/layers/'.$layer.'/data/';
 	}
 
-	public static function GetResourceArcLayerKml($site, $layer, $cat){
+	public function getResourceArcLayerKml($site, $layer, $cat){
 
 		//echo 'kml for site: '.$site.' layer: '.$layer."\n";
 		$file=__DIR__.'/'.$site.'-'.$layer.'-'.$cat.'.kml';
@@ -148,7 +154,7 @@ class MapResources{
 		);
 
 		$context = stream_context_create($opts);
-		$response = file_get_contents(self::GetResourceArcLayerKmlUrl($site, $layer, $cat), false, $context);
+		$response = file_get_contents($this->getResourceArcLayerKmlUrl($site, $layer, $cat), false, $context);
 
 		file_put_contents($file, $response);
 
@@ -156,12 +162,12 @@ class MapResources{
 
 	}
 
-	public static function GetResourceArcLayerKmlUrl($site, $layer, $cat){
-		return 'http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/'.$site.'/layers/'.$layer.'/data/?agsId='.$cat;
+	public function getResourceArcLayerKmlUrl($site, $layer, $cat){
+		return $this->url.'/'.$site.'/layers/'.$layer.'/data/?agsId='.$cat;
 	}
 
-	public static function GetResourceLayerKmlHeaders($site, $layer){
-		return get_headers(self::GetResourceLayerKmlUrl($site, $layer),1);
+	public function getResourceLayerKmlHeaders($site, $layer){
+		return get_headers($this->getResourceLayerKmlUrl($site, $layer),1);
 	}
 
 }
