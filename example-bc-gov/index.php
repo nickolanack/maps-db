@@ -8,7 +8,7 @@
  * 
  */
 
-include_once __DIR__.'/MapResources.php';
+include_once dirname(__DIR__).'/MapResources.php';
 $url='http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/';
 
 $server=new MapResources($url);
