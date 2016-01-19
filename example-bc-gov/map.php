@@ -10,7 +10,7 @@
 	src="https://s3-us-west-2.amazonaws.com/nickolanackbucket/mootools/mootools_compat.js"
 	type="text/javascript"></script>
 <script type="text/javascript"
-	src="bower_components/js-simplekml/KmlReader.js">
+	src="../bower_components/js-simplekml/KmlReader.js">
     </script>
 
 
@@ -54,7 +54,7 @@ var map = new google.maps.Map(document.getElementById('map'), {
   });
 
 var layer=<?php 
-
+$kmlurl='';
 
 if(key_exists('site',$_GET)){
 
@@ -62,7 +62,7 @@ if(key_exists('site',$_GET)){
 
 	if(key_exists('layer',$_GET)){
 
-		include_once __DIR__.'/MapResources.php';
+		include_once dirname(__DIR__).'/MapResources.php';
 
 		$url='http://apps.gov.bc.ca/pub/dmf-rest-api/resources/sites/';
 
@@ -72,15 +72,16 @@ if(key_exists('site',$_GET)){
 
 			$layer=$_GET['layer'];
 			$cat=$_GET['cat'];
-			
+			$kmlurl=$server->getResourceArcLayerKmlUrl($site, $layer, $cat);
 			echo json_encode($server->getResourceArcLayerKml($site, $layer, $cat));
 
 
 		}else{
 
-
 			$layer=$_GET['layer'];
+			$kmlurl=$server->getResourceLayerKmlUrl($site, $layer, $cat);
 			echo json_encode($server->getResourceLayerKml($site, $layer));
+
 		}
 	}
 }
@@ -160,6 +161,8 @@ var infowindow = new google.maps.InfoWindow({
    </script>
 	<script async defer
 		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnTJCsJO2piovlyQfpmemfQXVjwkdB7R4&callback=initMap"></script>
+
+	<a href="<?php echo $kmlurl; ?>">kml</a>
 </body>
 
 </html>
